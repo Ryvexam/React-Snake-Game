@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Snake Game</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white flex justify-center items-center min-h-screen">
-<div class="flex justify-between items-start w-full max-w-6xl px-4">
-  <div id="game-container" class="text-center w-3/4">
-    <h1 class="text-4xl font-bold mb-6">Snake Game</h1>
+<body class="bg-gray-900 text-white flex justify-center items-center min-h-screen p-4">
+<div class="flex flex-col lg:flex-row justify-between items-start w-full max-w-6xl">
+  <div id="game-container" class="text-center w-full lg:w-3/4 mb-8 lg:mb-0">
+    <h1 class="text-3xl lg:text-4xl font-bold mb-6">Snake Game</h1>
 
     <div id="username-input" class="mb-4">
-      <input type="text" id="username" placeholder="Enter your username" class="bg-gray-800 text-white px-4 py-2 rounded">
-      <button id="start-game" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded ml-2">Start Game</button>
+      <input type="text" id="username" placeholder="Enter your username" class="bg-gray-800 text-white px-4 py-2 rounded w-full sm:w-auto mb-2 sm:mb-0">
+      <button id="start-game" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full sm:w-auto sm:ml-2">Start Game</button>
     </div>
 
-    <div id="game-board" class="hidden mb-4 bg-gray-800 inline-block"></div>
+    <div id="game-board" class="hidden mb-4 bg-gray-800 inline-block mx-auto"></div>
 
     <div id="game-info" class="hidden">
       <p class="text-xl">Score: <span id="score" class="font-bold">0</span></p>
@@ -24,19 +24,29 @@
       <p id="game-over" class="hidden text-2xl text-red-500 font-bold mt-4">Game Over!</p>
       <button id="new-game" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded mt-4">New Game</button>
     </div>
+
+    <div id="touch-controls" class="lg:hidden">
+      <button id="up" class="bg-gray-700 p-4 rounded-t-lg w-16">&#8593;</button>
+      <div class="flex justify-center">
+        <button id="left" class="bg-gray-700 p-4 rounded-l-lg w-16">&#8592;</button>
+        <button id="right" class="bg-gray-700 p-4 rounded-r-lg w-16">&#8594;</button>
+      </div>
+      <button id="down" class="bg-gray-700 p-4 rounded-b-lg w-16">&#8595;</button>
+    </div>
   </div>
 
-  <div id="scoreboard" class="w-1/4 ml-4">
+  <div id="scoreboard" class="w-full lg:w-1/4 lg:ml-4">
     <h2 class="text-2xl font-bold mb-2">Scoreboard</h2>
-    <table class="w-full bg-gray-800">
-      <thead>
-      <tr>
-        <th class="px-4 py-2">Rank</th>
-        <th class="px-4 py-2">Username</th>
-        <th class="px-4 py-2">Score</th>
-      </tr>
-      </thead>
-      <tbody id="scoreboard-body">
+    <div class="overflow-x-auto">
+      <table class="w-full bg-gray-800">
+        <thead>
+        <tr>
+          <th class="px-4 py-2">Rank</th>
+          <th class="px-4 py-2">Username</th>
+          <th class="px-4 py-2">Score</th>
+        </tr>
+        </thead>
+        <tbody id="scoreboard-body">
       <!-- Scoreboard entries will be added here dynamically -->
       </tbody>
     </table>

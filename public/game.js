@@ -1,5 +1,5 @@
 const GRID_SIZE = 20;
-const CELL_SIZE = 20;
+let CELL_SIZE = 20; // We'll adjust this based on screen size
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_DIRECTION = { x: 1, y: 0 };
 
@@ -21,9 +21,31 @@ const startGameButton = document.getElementById('start-game');
 const newGameButton = document.getElementById('new-game');
 const gameInfo = document.getElementById('game-info');
 const usernameInputContainer = document.getElementById('username-input');
+const touchControls = document.getElementById('touch-controls');
 
 startGameButton.addEventListener('click', startNewGame);
 newGameButton.addEventListener('click', startNewGame);
+
+// Touch controls
+document.getElementById('up').addEventListener('click', () => setDirection(0, -1));
+document.getElementById('down').addEventListener('click', () => setDirection(0, 1));
+document.getElementById('left').addEventListener('click', () => setDirection(-1, 0));
+document.getElementById('right').addEventListener('click', () => setDirection(1, 0));
+
+function setDirection(x, y) {
+    if ((x !== 0 && direction.x === 0) || (y !== 0 && direction.y === 0)) {
+        direction = { x, y };
+    }
+}
+
+function adjustGameSize() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const size = Math.min(screenWidth, screenHeight) * 0.9;
+    CELL_SIZE = Math.floor(size / GRID_SIZE);
+    gameBoard.style.width = `${CELL_SIZE * GRID_SIZE}px`;
+    gameBoard.style.height = `${CELL_SIZE * GRID_SIZE}px`;
+}
 
 function startNewGame() {
     currentUsername = usernameInput.value.trim();
@@ -35,6 +57,9 @@ function startNewGame() {
     usernameInputContainer.classList.add('hidden');
     gameBoard.classList.remove('hidden');
     gameInfo.classList.remove('hidden');
+    touchControls.classList.remove('hidden');
+
+    adjustGameSize();
 
     snake = [...INITIAL_SNAKE];
     direction = {...INITIAL_DIRECTION};
@@ -57,7 +82,7 @@ function getRandomFood() {
 
 function drawGame() {
     gameBoard.innerHTML = '';
-    gameBoard.style.display = 'inline-grid';
+    gameBoard.style.display = 'grid';
     gameBoard.style.gridTemplateColumns = `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`;
 
     for (let y = 0; y < GRID_SIZE; y++) {
@@ -111,15 +136,7 @@ function updateGame() {
 function endGame() {
     gameOver = true;
     gameOverElement.classList.remove('hidden');
-    updateBestScore(score);
     sendScore(currentUsername, score);
-}
-
-function updateBestScore(newScore) {
-    if (newScore > bestScore) {
-        bestScore = newScore;
-        bestScoreElement.textContent = bestScore;
-    }
 }
 
 function sendScore(username, score) {
@@ -142,6 +159,13 @@ function sendScore(username, score) {
             if (data.success) {
                 scoreboard = data.scoreboard;
                 updateScoreboardDisplay();
+
+                // Update best score if necessary
+                const userBestScore = scoreboard.find(entry => entry.username === username)?.score;
+                if (userBestScore && userBestScore > bestScore) {
+                    bestScore = userBestScore;
+                    bestScoreElement.textContent = bestScore;
+                }
             } else {
                 console.error('Failed to update score');
             }
@@ -170,14 +194,19 @@ function handleKeyPress(e) {
     if (gameOver) return;
 
     switch (e.key) {
-        case 'ArrowUp': if (direction.y === 0) direction = { x: 0, y: -1 }; break;
-        case 'ArrowDown': if (direction.y === 0) direction = { x: 0, y: 1 }; break;
-        case 'ArrowLeft': if (direction.x === 0) direction = { x: -1, y: 0 }; break;
-        case 'ArrowRight': if (direction.x === 0) direction = { x: 1, y: 0 }; break;
+        case 'ArrowUp': setDirection(0, -1); break;
+        case 'ArrowDown': setDirection(0, 1); break;
+        case 'ArrowLeft': setDirection(-1, 0); break;
+        case 'ArrowRight': setDirection(1, 0); break;
     }
 }
 
 document.addEventListener('keydown', handleKeyPress);
+
+// Prevent scrolling when touching the game area on mobile
+gameBoard.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });
 
 function gameLoop() {
     if (!gameOver) {
@@ -185,6 +214,10 @@ function gameLoop() {
         setTimeout(gameLoop, 100); // Adjust this value to change game speed
     }
 }
+
+// Initial setup
+adjustGameSize();
+window.addEventListener('resize', adjustGameSize);
 
 // Fetch the initial scoreboard when the page loads
 fetch('/api/scoreboard')
