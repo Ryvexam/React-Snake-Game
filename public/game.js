@@ -1,5 +1,5 @@
-const GRID_SIZE = 20;
-let CELL_SIZE = 20; // We'll adjust this based on screen size
+const GRID_SIZE = 30;
+let CELL_SIZE = 30; // We'll adjust this based on screen size
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_DIRECTION = { x: 1, y: 0 };
 

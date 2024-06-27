@@ -1,12 +1,11 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 80;
 
-app.use(express.json());  // Use this instead of bodyParser
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const SCOREBOARD_FILE = 'scoreboard.json';
@@ -45,7 +44,16 @@ app.post('/api/score', async (req, res) => {
 
         let scoreboard = await readScoreboard();
 
-        scoreboard.push({ username, score });
+        const existingScoreIndex = scoreboard.findIndex(entry => entry.username === username);
+
+        if (existingScoreIndex !== -1) {
+            if (score > scoreboard[existingScoreIndex].score) {
+                scoreboard[existingScoreIndex].score = score;
+            }
+        } else {
+            scoreboard.push({ username, score });
+        }
+
         scoreboard.sort((a, b) => b.score - a.score);
         scoreboard = scoreboard.slice(0, MAX_SCORES);
 
@@ -57,6 +65,16 @@ app.post('/api/score', async (req, res) => {
     }
 });
 
-app.listen(port, '0.0.0.0', () => {
+app.post('/api/scoreboard/reset', async (req, res) => {
+    try {
+        await writeScoreboard([]);
+        res.json({ success: true, message: 'Scoreboard reset successfully' });
+    } catch (error) {
+        console.error('Error resetting scoreboard:', error);
+        res.status(500).json({ error: 'Failed to reset scoreboard' });
+    }
+});
+
+app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
