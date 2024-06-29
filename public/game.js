@@ -184,11 +184,11 @@ function updateScoreboardDisplay() {
 
         // Highlighting logic for first three entries
         if (index === 0) {
-            row.classList.add('gold');
+            row.classList.add('bg-amber-400');
         } else if (index === 1) {
-            row.classList.add('silver');
+            row.classList.add('bg-zinc-400');
         } else if (index === 2) {
-            row.classList.add('bronze');
+            row.classList.add('bg-red-900');
         }
 
         row.innerHTML = `
