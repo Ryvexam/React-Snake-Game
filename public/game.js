@@ -181,6 +181,16 @@ function updateScoreboardDisplay() {
 
     scoreboard.forEach((entry, index) => {
         const row = document.createElement('tr');
+
+        // Highlighting logic for first three entries
+        if (index === 0) {
+            row.classList.add('gold');
+        } else if (index === 1) {
+            row.classList.add('silver');
+        } else if (index === 2) {
+            row.classList.add('bronze');
+        }
+
         row.innerHTML = `
             <td class="px-4 py-2">${index + 1}</td>
             <td class="px-4 py-2">${entry.username}</td>
@@ -189,6 +199,7 @@ function updateScoreboardDisplay() {
         scoreboardBody.appendChild(row);
     });
 }
+
 
 function handleKeyPress(e) {
     if (gameOver) return;
