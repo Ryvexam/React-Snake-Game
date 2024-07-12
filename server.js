@@ -8,7 +8,7 @@ const port = process.env.PORT || 80;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const SCOREBOARD_FILE = path.join(__dirname, 'json', 'snake', 'scoreboard', 'scoreboard.json');
+const SCOREBOARD_FILE = 'scoreboard.json';
 const MAX_SCORES = 10;
 
 async function readScoreboard() {
